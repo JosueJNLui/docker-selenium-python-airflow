@@ -1,0 +1,22 @@
+services:
+  bot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bot
+    environment:
+      - DOMAIN=firefox
+    command: bash -c "sleep 10 && python app/main.py"
+    tty: true
+    volumes:
+      - "./app:/home/bot/app"
+      - "./extracted_data:/home/bot/extracted_data"
+    depends_on:
+      - firefox
+
+  firefox:
+    image: selenium/standalone-firefox:125.0
+    container_name: selenium-firefox
+    ports:
+      - "4444:4444"
+      - "7900:7900"
