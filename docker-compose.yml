@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: bot
+    container_name: bot_container
     environment:
       - DOMAIN=firefox
     command: bash -c "sleep 10 && python app/main.py"
@@ -16,7 +16,25 @@ services:
 
   firefox:
     image: selenium/standalone-firefox:125.0
-    container_name: selenium-firefox
+    container_name: firefox_container
     ports:
       - "4444:4444"
       - "7900:7900"
+  
+  pgdb:
+    image: postgres:15
+    container_name: pgdb_container
+    env_file:
+      - config.env
+    # environment:
+      # POSTGRES_USER: ${POSTGRES_USER}
+      # POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+    postgres:
